@@ -9,8 +9,8 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
         config.title = "Battle City client window";
-        config.width = 800;
-        config.height = 600;
+        config.width = 500;
+        config.height = 500;
 
 		new LwjglApplication(new MainClass(), config);
 	}

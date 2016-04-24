@@ -9,12 +9,15 @@ import com.badlogic.gdx.graphics.glutils.VertexBufferObjectWithVAO;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.ArrayList;
+
 public class MainClass extends ApplicationAdapter {
     SpriteBatch batch;
     public static PlayerTank plTank1;
     public static PlayerTank plTank2;
+    protected Client client = null;
     final int NUMBER_OF_BOTS = 15;
-    Array<BotTank> botList = new Array<BotTank>();
+    public static Array<BotTank> botList = new Array<BotTank>();
 
     @Override
     public void create() {
@@ -22,13 +25,7 @@ public class MainClass extends ApplicationAdapter {
         plTank1 = new PlayerTank(new Vector2(0, 0), new Vector2(0, 0));
         plTank2 = new PlayerTank(new Vector2(50, 50), new Vector2(0, 0));
 
-        Thread thread = new Thread(new Client());
-        thread.start();
-
-        for (int i = 0; i < NUMBER_OF_BOTS; i++) {
-            botList.add(new BotTank(new Vector2(BotTank.rn.nextInt(800), BotTank.rn.nextInt(600)), new Vector2(BotTank.rn.nextInt(4) - 1.5f, BotTank.rn.nextInt(4) - 1.5f)));
-        }
-
+        client = new Client();
     }
 
     @Override
@@ -50,7 +47,7 @@ public class MainClass extends ApplicationAdapter {
 
 
     public void update() {
-                              // мой танк
+        // мой танк
         plTank1.update();
         for (int i = 0; i < botList.size; i++) {
             botList.get(i).update();
@@ -88,5 +85,37 @@ public class MainClass extends ApplicationAdapter {
                 }
             }
         }
+
+        // send my data
+        Vector2 my = plTank1.getPosition();
+        ArrayList<AbstractBullet> myStoreToSend = new ArrayList<AbstractBullet>();
+        if (plTank1.getStore().size() > 0) {
+
+            for (int i = 0; i < plTank1.getStore().size(); i++) {
+
+                myStoreToSend.add(new AbstractBullet(plTank1.getStore().get(i).getBulletPosition(), plTank1.getStore().get(i).getBulletSpeed()));
+            }
+        }
+        Packet myPacketToSend = new Packet(client.getId(), "", my.x, my.y, plTank1.getRotateAngle(), myStoreToSend, null);
+        client.sendPacket(client.getSocket(), client.getAddress(), client.getServerPort(), myPacketToSend);
+
+
+        // receive data
+        Packet receivedPacket = client.getPacket(client.getSocket());
+        Vector2 opponent = new Vector2(receivedPacket.getPosX(), receivedPacket.getPosY());
+        plTank2.setPosition(opponent);
+        plTank2.setRotateAngle(receivedPacket.getRotateAngle());
+
+        ArrayList<Bullet> opponentStore = new ArrayList<Bullet>();
+        if (receivedPacket.getStore().size() > 0) {
+            for (int i = 0; i < receivedPacket.getStore().size(); i++) {
+
+                Bullet bul = new Bullet(receivedPacket.getStore().get(i).getBulletPosition(), receivedPacket.getStore().get(i).getBulletSpeed());
+
+                opponentStore.add(bul);
+            }
+        }
+        plTank2.setStore(opponentStore);
     }
+
 }

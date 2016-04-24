@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * Time: 20:45
  * To change this template use File | Settings | File Templates.
  */
-public class Client implements Runnable {
+public class Client {
 
     private int serverPort = 4444;
     private InetAddress address = null;
@@ -26,39 +27,23 @@ public class Client implements Runnable {
 
             socket = new DatagramSocket();
             address = InetAddress.getByName("localhost");
-
-            sendPacket(socket, address, serverPort, new Packet("don't know yet", "ready", 0, 0));
-
+            sendPacket(socket, address, serverPort, new Packet("don't know yet", "ready", 0, 0, 0, null, null));
             Packet response = getPacket(socket);
             id = response.getMsg();
-            System.out.println("my ID: " + id);
+
+            if (response.getBotSet().size() > 0) {
+
+                for (int i = 0; i < response.getBotSet().size(); i++) {
+                    MainClass.botList.add(new BotTank(response.getBotSet().get(i).getPosition(), response.getBotSet().get(i).getSpeed()));
+                }
+
+            }
 
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
-    @Override
-    public void run() {
-
-        while (true) {
-
-            Vector2 my = MainClass.plTank1.getPosition();
-            Packet myPacketToSend = new Packet(id, "", my.x, my.y);
-            sendPacket(socket, address, serverPort, myPacketToSend);
-
-            Packet opponentPacket = getPacket(socket);
-            Vector2 op = new Vector2(opponentPacket.getPosX(), opponentPacket.getPosY());
-            MainClass.plTank2.setPosition(op);
-
-            try {
-                TimeUnit.MICROSECONDS.sleep(20);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-        }
-    }
     // надо будет выносить в методы суперкласа, от него будут наследоваться классы клиент и сервер (те же методы в клиенте)
     public Packet getPacket(DatagramSocket socket) {
 
@@ -107,4 +92,19 @@ public class Client implements Runnable {
 
     }
 
+    public int getServerPort() {
+        return serverPort;
+    }
+
+    public InetAddress getAddress() {
+        return address;
+    }
+
+    public DatagramSocket getSocket() {
+        return socket;
+    }
+
+    public String getId() {
+        return id;
+    }
 }

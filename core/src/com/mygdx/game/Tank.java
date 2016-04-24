@@ -21,7 +21,7 @@ public abstract class Tank {
     protected Vector2 Position;
     protected Vector2 Speed;
     protected Vector2 shotDirection;
-    protected float rotateAngle;
+    protected int rotateAngle;
     protected int tankTextureSize;
     protected float loadTime;
     protected static Vector2 nullVector = new Vector2(0, 0);
@@ -34,6 +34,22 @@ public abstract class Tank {
 
     protected ORIENTATION Direction;
     protected ArrayList<Bullet> store = new ArrayList<Bullet>();
+
+    public ArrayList<Bullet> getStore() {
+        return store;
+    }
+
+    public void setStore(ArrayList<Bullet> store) {
+        this.store = store;
+    }
+
+    public int getRotateAngle() {
+        return rotateAngle;
+    }
+
+    public void setRotateAngle(int rotateAngle) {
+        this.rotateAngle = rotateAngle;
+    }
 
     public Vector2 getPosition() {
         return Position;
@@ -95,7 +111,7 @@ public abstract class Tank {
 
     }
 
-    public void rotateTank(float ang) {
+    public void rotateTank(int ang) {
 
         rotateAngle += ang;
     }
