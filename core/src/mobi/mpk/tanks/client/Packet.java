@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package mobi.mpk.tanks.client;
 
 import java.io.Serializable;
 import java.util.ArrayList;
