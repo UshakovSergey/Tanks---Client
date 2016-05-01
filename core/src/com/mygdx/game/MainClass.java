@@ -50,7 +50,7 @@ public class MainClass extends ApplicationAdapter {
         // мой танк
         plTank1.update();
         for (int i = 0; i < botList.size; i++) {
-            botList.get(i).update();
+            //botList.get(i).update();
             if (plTank1.store.size() > 0) {
                 for (int j = 0; j < plTank1.store.size(); j++) {
                     if (botList.get(i).Position.cpy().add(botList.get(i).tankTextureSize / 2, botList.get(i).tankTextureSize / 2).sub(plTank1.store.get(j).getBulletPosition()).len() < botList.get(i).tankTextureSize / 2 && !plTank1.store.get(j).isDestroyed()) {
@@ -63,7 +63,7 @@ public class MainClass extends ApplicationAdapter {
 
         //plTank2.update();                     // танк опонента , апдейтим с сервера
         for (int i = 0; i < botList.size; i++) {
-            botList.get(i).update();
+           // botList.get(i).update();
             if (plTank2.store.size() > 0) {
                 for (int j = 0; j < plTank2.store.size(); j++) {
                     if (botList.get(i).Position.cpy().add(botList.get(i).tankTextureSize / 2, botList.get(i).tankTextureSize / 2).sub(plTank2.store.get(j).getBulletPosition()).len() < botList.get(i).tankTextureSize / 2 && !plTank2.store.get(j).isDestroyed()) {
@@ -116,6 +116,14 @@ public class MainClass extends ApplicationAdapter {
             }
         }
         plTank2.setStore(opponentStore);
+
+
+        for (int i = 0; i < botList.size ; i++) {
+            botList.get(i).setPosition(receivedPacket.getBotSet().get(i).getPosition());
+            botList.get(i).setRotateAngle(receivedPacket.getBotSet().get(i).getAngle());
+
+        }
+
     }
 
 }

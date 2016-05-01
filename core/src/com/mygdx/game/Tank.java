@@ -15,11 +15,9 @@ import java.util.Random;
  * Time: 23:04
  * To change this template use File | Settings | File Templates.
  */
-public abstract class Tank {
+public abstract class Tank extends PseudoTank {
 
     private boolean isAlive;
-    protected Vector2 Position;
-    protected Vector2 Speed;
     protected Vector2 shotDirection;
     protected int rotateAngle;
     protected int tankTextureSize;
@@ -67,13 +65,11 @@ public abstract class Tank {
         Direction = direction;
     }
 
-    public Tank(Vector2 position, Vector2 speed) {
+    protected Tank(Vector2 position, Vector2 speed) {
+        super(position, speed);
         isAlive = true;
-        Position = position;
-        Speed = speed;
-        destroyDebounce = 0;
-        enginePower = 0.4f;
-
+        this.destroyDebounce = 0;
+        this.enginePower = 0.4f;
     }
 
     public abstract void draw(SpriteBatch batch);

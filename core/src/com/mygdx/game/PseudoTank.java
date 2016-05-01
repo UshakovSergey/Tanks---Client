@@ -1,8 +1,10 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
 import java.io.Serializable;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,8 +15,20 @@ import java.io.Serializable;
  */
 public class PseudoTank implements Serializable {
 
-    private Vector2 Position;
-    private Vector2 Speed;
+    protected static Random rn = new Random();
+    protected Vector2 Position;
+    protected Vector2 Speed;
+    private int tankTextureSize = 32;
+    private float turnTime;
+    private int angle;
+
+    public int getAngle() {
+        return angle;
+    }
+
+    public void setAngle(int angle) {
+        this.angle = angle;
+    }
 
     public PseudoTank(Vector2 position, Vector2 speed) {
         Position = position;
@@ -35,5 +49,34 @@ public class PseudoTank implements Serializable {
 
     public void setSpeed(Vector2 speed) {
         Speed = speed;
+    }
+
+    public void update() {
+        float prevX = Position.x;
+        float prevY = Position.y;
+
+        Position.add(Speed);
+
+        if (Position.x > Gdx.graphics.getWidth() - tankTextureSize) {
+            Position.x -= Speed.x;
+        }
+        if (Position.x < 0) {
+            Position.x -= Speed.x;
+        }
+        if (Position.y > Gdx.graphics.getHeight() - tankTextureSize) {
+            Position.y -= Speed.y;
+        }
+        if (Position.y < 0) {
+            Position.y -= Speed.y;
+        }
+
+        turnTime = turnTime + Gdx.graphics.getDeltaTime();
+        if (turnTime > 0.5) {
+            if (Math.abs(prevX - Position.x) < 0.001 && Math.abs(prevY - Position.y) < 0.001) {
+                angle = 90 * rn.nextInt(3);
+                Speed.rotate(angle);
+            }
+            turnTime = 0;
+        }
     }
 }

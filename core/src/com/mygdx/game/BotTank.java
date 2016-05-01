@@ -30,7 +30,9 @@ public class BotTank extends Tank {
 
     @Override
     public void draw(SpriteBatch batch) {
-        batch.draw(tankTexture, Position.x, Position.y);
+    //    batch.draw(tankTexture, Position.x, Position.y);
+        batch.draw(tankTexture, Position.x, Position.y, tankTextureSize / 2, tankTextureSize / 2, tankTextureSize, tankTextureSize, 1, 1, rotateAngle, 0, 0, tankTextureSize, tankTextureSize, false, false);
+
     }
 
     @Override

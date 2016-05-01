@@ -47,8 +47,8 @@ public class Client {
     // надо будет выносить в методы суперкласа, от него будут наследоваться классы клиент и сервер (те же методы в клиенте)
     public Packet getPacket(DatagramSocket socket) {
 
-        byte[] incomingData = new byte[1024];
-        DatagramPacket packet = new DatagramPacket(incomingData, 1024);
+        byte[] incomingData = new byte[2048];
+        DatagramPacket packet = new DatagramPacket(incomingData, 2048);
 
         try {
             socket.receive(packet);
