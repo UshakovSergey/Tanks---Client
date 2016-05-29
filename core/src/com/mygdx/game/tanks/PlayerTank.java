@@ -1,48 +1,29 @@
-package com.mygdx.game;
+package com.mygdx.game.tanks;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.net.NetBullet;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-
-/**
- * Created with IntelliJ IDEA.
- * User: US
- * Date: 07.04.16
- * Time: 0:39
- * To change this template use File | Settings | File Templates.
- */
 public class PlayerTank extends Tank {
 
     private static float shotTime = 0;
 
-    public PlayerTank(Vector2 position, Vector2 speed) {
-        super(position, speed);
-        tankTexture = new Texture("TANK2.tga");
-        tankTextureSize = tankTexture.getWidth();
-        Direction = ORIENTATION.NORTH;
-        rotateAngle = 0;
-        shotDirection = new Vector2(1, 0);
-        loadTime = 0.4f;
+    public PlayerTank(Vector2 position, Vector2 speed, int tankID) {
+        super(position, speed, tankID);
+        this.tankTexture = new Texture("RegularTank.tga");
+        this.tankTextureSize = tankTexture.getWidth();
+        this.Direction = ORIENTATION.NORTH;
+        this.rotateAngle = 0;
+        this.shotDirection = new Vector2(1, 0);
+        this.loadTime = 0.4f;
     }
 
-    @Override
+
     public void draw(SpriteBatch batch) {
         batch.draw(tankTexture, Position.x, Position.y, tankTextureSize / 2, tankTextureSize / 2, tankTextureSize, tankTextureSize, 1, 1, rotateAngle, 0, 0, tankTextureSize, tankTextureSize, false, false);
-
-        if (store.size() > 0) {
-            for (int i = 0; i < store.size(); i++) {
-                batch.draw(store.get(i).getBulletTexture(), store.get(i).getBulletPosition().x, store.get(i).getBulletPosition().y, store.get(i).getBulletTextureSize() / 2, store.get(i).getBulletTextureSize() / 2, store.get(i).getBulletTextureSize(), store.get(i).getBulletTextureSize(), 1, 1, rotateAngle, 0, 0, store.get(i).getBulletTextureSize(), store.get(i).getBulletTextureSize(), false, false);
-
-            }
-        }
-
     }
 
     @Override
@@ -74,7 +55,36 @@ public class PlayerTank extends Tank {
                 shotTime = 0;
             }
         }
-
-
     }
+
+    public void moveForwardTank() {
+        Vector2 move = new Vector2(0.0f, enginePower);
+        Speed.add(move);
+        shotDirection = Speed.cpy();
+    }
+
+    public void moveBackTank() {
+        Vector2 move = new Vector2(0.0f, -enginePower);
+        Speed.add(move);
+        shotDirection = Speed.cpy();
+    }
+
+    public void moveLeftTank() {
+        Vector2 move = new Vector2(-enginePower, 0.0f);
+        Speed.add(move);
+        shotDirection = Speed.cpy();
+    }
+
+    public void moveRightTank() {
+        Vector2 move = new Vector2(enginePower, 0.0f);
+        Speed.add(move);
+        shotDirection = Speed.cpy();
+    }
+
+    public void tankShot() {
+        NetBullet bul = new NetBullet(Position.cpy().add(tankTextureSize/2, tankTextureSize/2), shotDirection.nor().scl(3));
+        netBulletsStore.add(bul);
+    }
+
+
 }
